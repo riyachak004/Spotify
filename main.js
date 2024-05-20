@@ -62,13 +62,14 @@ chill_songs = [];
     const readline = require('readline');
     
     const file = readline.createInterface({
-      input: fs.createReadStream('/Users/riyachakravarty/Desktop/xcode_files/ProjS22/playlistgen/YourLibrary.json'),
+      input: fs.createReadStream('/Users/riyachakravarty/Desktop/xcode_files/ProjS22/playlistgen/YourLibrary2.json'),
       output: process.stdout,
       terminal: false
   });
 
 
   file.on('line', (line) => { 
+
     split_line = line.split(':');
  
     if (split_line[0] == '      "track"'){
@@ -83,12 +84,11 @@ chill_songs = [];
       read_from_file.push(val);
 
       // getting numbers
-      // console.log("ID: " + read_from_file[read_from_file.length - 1].id);
-      // console.log("NAME: " + read_from_file[read_from_file.length - 1].title);
+      console.log("ID: " + read_from_file[read_from_file.length - 1].id);
+      
       var url = "https://api.spotify.com/v1/audio-features/" + read_from_file[read_from_file.length - 1].id;
 
       new_entry = new finalval (read_from_file[read_from_file.length - 1].id, read_from_file[read_from_file.length - 1].title);
-      //console.log("input ID: " + new_entry.id + " input TITLE: " + new_entry.title);
 
       var xhr = new XMLHttpRequest();
       xhr.open("GET", url); 
@@ -96,55 +96,19 @@ chill_songs = [];
       xhr.setRequestHeader("Accept", "application/json");
       xhr.setRequestHeader("Content-Type", "application/json");
       xhr.setRequestHeader("Authorization", "Bearer " + access);
+      console.log("here")
       xhr.onreadystatechange = function () {
         if (xhr.readyState === 4) {
             //console.log(xhr.status);
             //console.log(xhr.responseText);
             data = JSON.parse(xhr.responseText);
-
-            //console.log(data.id + "," + data.danceability + "," + data.energy + "," + data.liveness + "," + data.valence);
+          console.log(data.id + "," + data.danceability + "," + data.energy + "," + data.liveness + "," + data.valence);
             //array_emotions_numb.push(new_emotions);
             var sad = 0;
             var happy = 0;
             var dance = 0;
             var chill = 0;
-            if (data.energy <= 0.6){
-              sad = sad + 1;
-            }
-            if (data.energy >= 0.7){
-              happy = happy + 1;
-            }
-            if (data.energy > 0.6 && data.energy < 0.68){
-              chill = chill + 1; 
-            }
-            if(data.energy >= 0.68 && data.energy <= 0.72){
-              dance = dance + 1; 
-            }
-
-            if (data.danceability <= 0.5){
-              sad = sad + 1;
-            }
-            if (data.danceability > 0.5 && data.danceability <= 0.7){
-              happy = happy + 1;
-            }
-
-            if (data.liveness <= 0.13){
-              chill = chill + 1; 
-              dance = dance + 1;
-            }
-
-            if(data.valence >= 0.5 && data.valence <= 0.8){
-              chill = chill + 1; 
-              dance = dance + 1;
-            }
-
-            if (data.valence >= 0.45){
-              sad = sad + 1;
-            }
-            if(data.valence >= 0.5 && data.valence <= 1){
-              happy = happy + 1; 
-            }
-
+            
             var feeling = Math.max(sad, happy, chill, dance);
             
             //console.log("input ID: " + data.id);
