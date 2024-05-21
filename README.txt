@@ -1,5 +1,7 @@
 Overview: this project uses the K-clustering/K-means algorithm to classify songs into different playlists, and then creates these playlists 
-for a Spotify user. 
+for a Spotify user.
+
+Relevant Files: request.py, cluster.py
 
 Orignally I used a box plot to determine the bounds of my song classification,but this method proved to be rather inefficient. 
 So I decided to revisit this project this year and try using another classifer for two reasons. The first reason is I wanted the songs
