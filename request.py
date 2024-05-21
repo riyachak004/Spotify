@@ -50,7 +50,7 @@ def createPlaylist(df, n_clusters):
                 "public": False
             }
 
-            user_id = '313ydbhloyuthqjaxbxs7tg2iv34'
+            user_id = '' # insert user id here
             url = f'https://api.spotify.com/v1/users/{user_id}/playlists'
 
             response = requests.post(url, headers=headers, json=body)
@@ -95,7 +95,6 @@ def createPlaylist(df, n_clusters):
         print('Failed to get token:', response.status_code)
         print(response.json())
 
-    # starting off will have less than 100 items 
 
     
 
