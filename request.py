@@ -38,7 +38,7 @@ def createPlaylist(df, n_clusters):
             'Authorization': f'Bearer {access_token}',
             'Content-Type': 'application/json'
         }
-
+        
         for cluster in range(n_clusters):
             cluster_df = df[df['cluster'] == cluster] # subset of the songs of the same cluster
             num_str = '{}'.format(cluster)
@@ -50,7 +50,7 @@ def createPlaylist(df, n_clusters):
                 "public": False
             }
 
-            user_id = '' # insert user id here
+            user_id = '313ydbhloyuthqjaxbxs7tg2iv34' # insert user id here
             url = f'https://api.spotify.com/v1/users/{user_id}/playlists'
 
             response = requests.post(url, headers=headers, json=body)
