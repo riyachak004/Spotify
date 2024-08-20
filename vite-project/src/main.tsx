@@ -13,7 +13,7 @@ const App = () =>{
         console.log("username: ", spotifyUserId);
         axios({
             method: 'post',
-            url: 'http://127.0.0.1:5000/userid',
+            url: 'http://127.0.0.1:5000/login',
             data: {
                 userid: spotifyUserId
             }

@@ -4,11 +4,47 @@ from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
 from sklearn.preprocessing import LabelEncoder
 from request import createPlaylist
-from flask import Flask, request, jsonify, json
+from flask import Flask, redirect, request, jsonify, json
 from flask_cors import CORS, cross_origin
+from requests_oauthlib import OAuth2Session
+from requests.auth import HTTPBasicAuth
+import requests
 
 app = Flask(__name__)
 CORS(app, origins=["http://localhost:5173"])
+
+AUTH_URL = 'https://accounts.spotify.com/authorize'
+TOKEN_URL = 'https://accounts.spotify.com/api/token'
+REDIRECT_URI = 'http://127.0.0.1:5000/callback' # my case is 'http://localhost:3000/callback'
+# try this one too: http://localhost:8888/callback
+CLIENT_ID = "9bfa637adec64d2a900f4a6f38f7b300"
+CLIENT_SECRET = "5905aa2bac594662b7b1484b64e1fc7f"
+SCOPE = [
+    "playlist-modify-public",
+    "playlist-modify-private"
+]
+
+@app.route("/login")
+def login():
+    spotify = OAuth2Session(CLIENT_ID, scope=SCOPE, redirect_uri=REDIRECT_URI)
+    authorization_url, state = spotify.authorization_url(AUTH_URL)
+    output = redirect(authorization_url)
+    print("this is the output: ", output)
+
+@app.route("/callback", methods=['GET'])
+def callback():
+    code = request.args.get('code')
+    res = requests.post(TOKEN_URL,
+        auth=HTTPBasicAuth(CLIENT_ID, CLIENT_SECRET),
+        data={
+            'grant_type': 'authorization_code',
+            'code': code,
+            'redirect_uri': REDIRECT_URI
+        })
+    response = json.dumps(res.json())
+    print("response: ", response)
+    return response
+
 
 @app.route('/userid', methods=['POST'])
 def creatingplaylistFunction(): 
