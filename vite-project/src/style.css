@@ -34,6 +34,7 @@ h1 {
   font-size: 3.2em;
   color: black;
   line-height: 1.1;
+  text-align: center;
 }
 
 #app {
@@ -65,24 +66,23 @@ h1 {
 }
 
 button {
-  border-radius: 8px;
-  border: 1px solid transparent;
+  /* border-radius: 8px; */
+  border: 3px solid transparent;
   padding: 0.6em 1.2em;
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: white;
   cursor: pointer;
-  transition: border-color 0.25s;
+  transition: border-color 0.8s;
 }
 button:hover {
-  border-color: #646cff;
+  border-bottom-color: #646cff;
 }
-button:focus,
+/* button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
-}
-
+} */
 
 
 @media (prefers-color-scheme: light) {
@@ -97,6 +97,7 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
 body {
   margin: 0;
   padding: 0;
@@ -108,20 +109,29 @@ body {
   perspective: 1000px; /* Adds depth, crucial for 3D effects */
 }
 
-.cube {
-  width: 150px;
-  height: 150px;
-  background-color: red;
-  transform-style: preserve-3d;
-  animation: rotateZ 4s linear infinite;
+
+.mainOptions{
+  background-color: none;
+  color: black;
+
 }
 
-@keyframes rotateZ {
-  from {
-    transform: rotateZ(0deg);
-  }
-  to {
-    transform: rotateZ(360deg);
-  }
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
 }
 
+.container{
+  animation: fadeIn 2s;
+  padding: 0.5em;
+  color: black;
+  border-radius: 2px;
+  border-color: black;
+  background-color: #1db954b2;
+  border-radius: 25px;
+  transition: border-color 0.8s;
+}
+
+.userIdText{
+  padding: 0.5em;
+}
