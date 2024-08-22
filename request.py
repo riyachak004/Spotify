@@ -1,10 +1,70 @@
 import requests
 import webbrowser
 
-def createPlaylist(df, n_clusters): 
 
+def createPlaylist(df, n_clusters, headers): 
+    for cluster in range(n_clusters):
+        cluster_df = df[df['cluster'] == cluster] # subset of the songs of the same cluster
+        num_str = '{}'.format(cluster)
+        playlistName = 'GEN Playlist ' + num_str
+            
+        body = {
+            "name": playlistName,
+            "description": "New playlist description",
+            "public": False
+        }
+
+        user_id = '313ydbhloyuthqjaxbxs7tg2iv34' # insert user id here
+        url = f'https://api.spotify.com/v1/users/{user_id}/playlists'
+
+        response = requests.post(url, headers=headers, json=body)
+
+        if response.status_code == 201:
+            print('Playlist created successfully\n')
+            playlist = response.json()
+            playlist_id = playlist['id']
+
+            # Add tracks to the playlist
+            songUri = cluster_df['Spotify_ID']
+
+            subLists = [songUri[i:i + 100] for i in range(0, len(songUri), 100)]
+            count = 0
+            for list in subLists:
+                print("iteration: ", count)
+                count+=1
+                track_uris = []
+                for song in list: 
+                    trackUri = 'spotify:track:' + song
+                    track_uris.append(trackUri)
+
+                add_tracks_url = f'https://api.spotify.com/v1/playlists/{playlist_id}/tracks'
+
+                add_tracks_payload = {
+                    'uris': track_uris
+                }
+
+                add_tracks_response = requests.post(add_tracks_url, headers=headers, json=add_tracks_payload)
+
+                if add_tracks_response.status_code == 201 or add_tracks_response.status_code == 200:
+                    print('Tracks added successfully\n')
+                else:
+                    print(f'Failed to add tracks: {add_tracks_response.status_code}')
+                    print(add_tracks_response.json())
+                    exit()
+                
+        else:
+            print(f'Failed to create playlist: {response.status_code}')
+            print(response.json())
+
+
+def getAuth(userid: str): 
+    if userid != "": 
+        client_id = userid
+    else: 
+        client_id = '9bfa637adec64d2a900f4a6f38f7b300'
+    print("client id: ", client_id)
     # Step 1: Register your application and get client ID, client secret, and set the redirect URI
-    client_id = '9bfa637adec64d2a900f4a6f38f7b300'
+    
     client_secret = '5905aa2bac594662b7b1484b64e1fc7f'
     redirect_uri = 'http://localhost:8888/callback'
     scopes = 'playlist-modify-public playlist-modify-private'
@@ -38,59 +98,7 @@ def createPlaylist(df, n_clusters):
             'Authorization': f'Bearer {access_token}',
             'Content-Type': 'application/json'
         }
-        
-        for cluster in range(n_clusters):
-            cluster_df = df[df['cluster'] == cluster] # subset of the songs of the same cluster
-            num_str = '{}'.format(cluster)
-            playlistName = 'GEN Playlist ' + num_str
-                
-            body = {
-                "name": playlistName,
-                "description": "New playlist description",
-                "public": False
-            }
-
-            user_id = '313ydbhloyuthqjaxbxs7tg2iv34' # insert user id here
-            url = f'https://api.spotify.com/v1/users/{user_id}/playlists'
-
-            response = requests.post(url, headers=headers, json=body)
-
-            if response.status_code == 201:
-                print('Playlist created successfully\n')
-                playlist = response.json()
-                playlist_id = playlist['id']
-
-                # Add tracks to the playlist
-                songUri = cluster_df['Spotify_ID']
-
-                subLists = [songUri[i:i + 100] for i in range(0, len(songUri), 100)]
-                count = 0
-                for list in subLists:
-                    print("iteration: ", count)
-                    count+=1
-                    track_uris = []
-                    for song in list: 
-                        trackUri = 'spotify:track:' + song
-                        track_uris.append(trackUri)
-
-                    add_tracks_url = f'https://api.spotify.com/v1/playlists/{playlist_id}/tracks'
-
-                    add_tracks_payload = {
-                        'uris': track_uris
-                    }
-
-                    add_tracks_response = requests.post(add_tracks_url, headers=headers, json=add_tracks_payload)
-
-                    if add_tracks_response.status_code == 201 or add_tracks_response.status_code == 200:
-                        print('Tracks added successfully\n')
-                    else:
-                        print(f'Failed to add tracks: {add_tracks_response.status_code}')
-                        print(add_tracks_response.json())
-                        exit()
-                    
-            else:
-                print(f'Failed to create playlist: {response.status_code}')
-                print(response.json())
+        return headers
     else:
         print('Failed to get token:', response.status_code)
         print(response.json())
